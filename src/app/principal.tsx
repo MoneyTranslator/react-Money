@@ -6,9 +6,8 @@ import {Link, useLocalSearchParams, useRouter} from "expo-router";
 import { useEffect, useState } from 'react';
 import {themas} from "../global/themes";
 import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
-// import {useAsyncStorage} from '@react-native-async-storage/async-storage';
-
-
+import {Botao} from "../components/botao/index"
+ 
 export default function App() {
 
 
@@ -20,7 +19,7 @@ const [cor,SetCor]= useState(themas.cores.transparente)
 const [troca,setTroca]= useState(true);
 const [estado,setEstado]= useState("🐈");
 const [dinheiro,setDinheiro]= useState(0);
-
+const [dinheiroCor,setDinheiroCor]= useState("black");
 useEffect(() => {
   async function carregarDinheiro() {
     const valorSalvo = await AsyncStorage.getItem('dinheiro');
@@ -79,9 +78,7 @@ if (troca){
 SetCor(themas.cores.transparente);
 setEstado("🐈")
 await AsyncStorage.setItem('tema', "🐈");
-const novodinheiro = dinheiro - 10;
-setDinheiro(novodinheiro);
-await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
+
 
 
 }else {
@@ -90,17 +87,50 @@ SetCor(themas.cores.preto);
 setEstado("🐈‍⬛")
 await AsyncStorage.setItem('tema', "🐈‍⬛");
 
-const novodinheiro = dinheiro + 10;
-setDinheiro(novodinheiro);
-await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
+
 }
 setTroca(!troca);
 
 }
 
+async function diminuir(){
+
+  const novodinheiro = dinheiro - 10;
+  setDinheiro(novodinheiro);
+  await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
+  corMoney()
+}
+
+async function somar(){
+
+  const novodinheiro = dinheiro + 10;
+  setDinheiro(novodinheiro);
+  await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
+  corMoney()
+}
+
+async function corMoney(){
+
+if (dinheiro>=100 && dinheiro < 200){
+
+setDinheiroCor("green");
+
+} else if(dinheiro>=200){
+
+  setDinheiroCor("yellow");
+}else if (dinheiro<100){
+
+  setDinheiroCor("red");
+}
+
+
+}
+
+
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-<View> 
+    <SafeAreaView style={{ flex: 1, backgroundColor: cor, }}>
+<View > 
     <View style={[style.topo, {backgroundColor: cor}]}>
       
       <Text>Deu certo</Text>
@@ -124,9 +154,17 @@ setTroca(!troca);
 </View>
 
 
-<Text>Dinheiro total: {dinheiro} R$</Text>
+<Text style={{color: dinheiroCor}}>Dinheiro total: {dinheiro} R$</Text>
       </View>
 
+<Botao titulo='Menos' texto='-' onPress={()=> diminuir()}>
+
+</Botao>
+
+
+<Botao titulo='Mais' texto="+" onPress={()=> somar()}>
+
+</Botao>
 
 </View>
 </SafeAreaView>
