@@ -11,7 +11,7 @@ btn:{
 
 borderWidth: 1,
 borderColor: "black",
-width: Dimensions.get("window").width *0.1,
+width: "auto",
 borderRadius: 40,
 alignItems: "center",
 justifyContent: "center",

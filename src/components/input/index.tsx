@@ -17,7 +17,7 @@ export function  Input(props: TextInputProps & { nome?: string }) {
     return(
       <>
       
-      {nome ? <Text style={style.bigtxt}>{nome}</Text> : null}
+      {nome ? <Text style={style.titulo}>{nome}</Text> : null}
 
 <TextInput style={style.txtinpt} {...props} />
 

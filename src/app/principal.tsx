@@ -1,173 +1,217 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View,Image,TextInput,TouchableOpacity,Alert,ActivityIndicator, SafeAreaView} from "react-native";
-import {style} from "../styles/style"
-import {Input} from "../components/input/index";
-import {Link, useLocalSearchParams, useRouter} from "expo-router";
+import { Text, View, SafeAreaView, TouchableOpacity, Alert } from "react-native";
+import { style } from "../styles/style";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
-import {themas} from "../global/themes";
-import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
-import {Botao} from "../components/botao/index"
- 
+import { themas } from "../global/themes";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Botao } from "../components/botao/index";
+import { Input } from "../components/input/index";
+import { Picker } from '@react-native-picker/picker';
+
 export default function App() {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const [cor, setCor] = useState(themas.cores.transparente);
+  const [troca, setTroca] = useState(true);
+  const [estado, setEstado] = useState("🐈");
+  const [dinheiro, setDinheiro] = useState(0);
+  const [dinheiroCor, setDinheiroCor] = useState("black");
+  const [dividas, setDividas] = useState(0);
+  const [dividaCor, setDividaCor] = useState(themas.cores.preto);
+  const [quantia, setQuantia] = useState(0);
+  const [gastos, setGastos] = useState('');
+  const [necessidade, setNecessidade] = useState(0);
+  const [desejos, setDesejos] = useState(0);
+  const [investimento, setInvestimento] = useState(0);
 
+  useEffect(() => {
+    async function carregarDados() {
+      const valorSalvo = await AsyncStorage.getItem('dinheiro');
+      const dividaSalva = await AsyncStorage.getItem('divida');
+      const necessidadeSalva = await AsyncStorage.getItem('necessidade');
+      const investimentoSalvo = await AsyncStorage.getItem('investimento');
+      const desejosSalvos = await AsyncStorage.getItem('desejos');
 
-
-   var router= useRouter();
-const params= useLocalSearchParams()
-    const nome= params;
-const [cor,SetCor]= useState(themas.cores.transparente)
-const [troca,setTroca]= useState(true);
-const [estado,setEstado]= useState("🐈");
-const [dinheiro,setDinheiro]= useState(0);
-const [dinheiroCor,setDinheiroCor]= useState("black");
-useEffect(() => {
-  async function carregarDinheiro() {
-    const valorSalvo = await AsyncStorage.getItem('dinheiro');
-    if (valorSalvo !== null) {
-      setDinheiro(Number(valorSalvo));
-    } else {
-      setDinheiro(500); 
+      if (valorSalvo !== null) setDinheiro(Number(valorSalvo));
+      if (dividaSalva !== null) setDividas(Number(dividaSalva));
+      if (necessidadeSalva !== null) setNecessidade(Number(necessidadeSalva));
+      if (investimentoSalvo !== null) setInvestimento(Number(investimentoSalvo));
+      if (desejosSalvos !== null) setDesejos(Number(desejosSalvos));
     }
+
+    async function carregarTema() {
+      const temaSalvo = await AsyncStorage.getItem('tema');
+      if (temaSalvo === '🐈') {
+        setCor(themas.cores.transparente);
+        setEstado('🐈');
+      } else {
+        setCor(themas.cores.preto);
+        setEstado('🐈‍⬛');
+      }
+    }
+
+    carregarDados();
+    carregarTema();
+  }, []);
+
+  useEffect(() => {
+    corMoney();
+  }, [dinheiro]);
+
+  async function trocar() {
+    const novoEstado = troca ? '🐈' : '🐈‍⬛';
+    const novaCor = troca ? themas.cores.transparente : themas.cores.preto;
+    setEstado(novoEstado);
+    setCor(novaCor);
+    await AsyncStorage.setItem('tema', novoEstado);
+    setTroca(!troca);
   }
 
+  async function diminuir() {
+    if (dinheiro < quantia) {
+      Alert.alert("Não gaste mais do que tem");
+      return;
+    }
 
-  async function carregartema(){
+    switch (gastos) {
+      case 'Necessidade':
+        const novaNecessidade = necessidade - quantia;
+        setNecessidade(novaNecessidade);
+        await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+        break;
 
-    let temaSalvo= await AsyncStorage.getItem('tema');
-setDinheiro(Number(temaSalvo) || 1);
+      case 'Desejos':
+        const novoDesejos = desejos - quantia;
+        setDesejos(novoDesejos);
+        await AsyncStorage.setItem('desejos', novoDesejos.toString());
+        break;
 
-if (temaSalvo== '🐈'){
+      case 'Investimento':
+        const novoInvestimento = investimento - quantia;
+        setInvestimento(novoInvestimento);
+        await AsyncStorage.setItem('investimento', novoInvestimento.toString());
+        break;
 
-  SetCor(themas.cores.transparente);
-  setEstado("🐈");
-}else {
+      default:
+        Alert.alert("Selecione um tipo de gasto.");
+        return;
+    }
 
-  
-SetCor(themas.cores.preto);
-setEstado("🐈‍⬛")
-}
+    setDinheiro(dinheiro - quantia);
+    await AsyncStorage.setItem('dinheiro', (dinheiro - quantia).toString());
 
-
+    corMoney();
   }
-  carregartema();
-  carregarDinheiro();
-}, []);
 
-async function salvarVars(){ 
+  async function somar() {
+    switch (gastos) {
+      case 'Necessidade':
+        const novaNecessidade = necessidade + quantia;
+        setNecessidade(novaNecessidade);
+        await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+        break;
 
+      case 'Desejos':
+        const novoDesejos = desejos + quantia;
+        setDesejos(novoDesejos);
+        await AsyncStorage.setItem('desejos', novoDesejos.toString());
+        break;
 
-await AsyncStorage.setItem('dinheiro', '500');
+      case 'Investimento':
+        const novoInvestimento = investimento + quantia;
+        setInvestimento(novoInvestimento);
+        await AsyncStorage.setItem('investimento', novoInvestimento.toString());
+        break;
 
-}
+      default:
+        Alert.alert("Selecione um tipo de gasto.");
+        return;
+    }
 
+    setDinheiro(dinheiro + quantia);
+    await AsyncStorage.setItem('dinheiro', (dinheiro + quantia).toString());
 
+    corMoney();
+  }
 
-useEffect( ()=>{ 
-if (params.logado==null){
+  async function resetarTudo() {
+    setDinheiro(0);
+    setDividas(0);
+    setNecessidade(0);
+    setDesejos(0);
+    setInvestimento(0);
+    await AsyncStorage.multiSet([
+      ['dinheiro', '0'],
+      ['divida', '0'],
+      ['necessidade', '0'],
+      ['desejos', '0'],
+      ['investimento', '0']
+    ]);
+    corMoney();
+    Alert.alert("Reset feito", "Todos os valores foram zerados.");
+  }
 
-// router.navigate("");
+  function corMoney() {
+    if (dinheiro >= 200) {
+      setDinheiroCor("yellow");
+    } else if (dinheiro >= 100) {
+      setDinheiroCor("green");
+    } else {
+      setDinheiroCor("red");
+    }
 
-}
-},[params]);
-var a= 1;
-
-async function trocar(){
-
-
-if (troca){
-SetCor(themas.cores.transparente);
-setEstado("🐈")
-await AsyncStorage.setItem('tema', "🐈");
-
-
-
-}else {
-
-SetCor(themas.cores.preto);
-setEstado("🐈‍⬛")
-await AsyncStorage.setItem('tema', "🐈‍⬛");
-
-
-}
-setTroca(!troca);
-
-}
-
-async function diminuir(){
-
-  const novodinheiro = dinheiro - 10;
-  setDinheiro(novodinheiro);
-  await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
-  corMoney()
-}
-
-async function somar(){
-
-  const novodinheiro = dinheiro + 10;
-  setDinheiro(novodinheiro);
-  await AsyncStorage.setItem('dinheiro', novodinheiro.toString());
-  corMoney()
-}
-
-async function corMoney(){
-
-if (dinheiro>=100 && dinheiro < 200){
-
-setDinheiroCor("green");
-
-} else if(dinheiro>=200){
-
-  setDinheiroCor("yellow");
-}else if (dinheiro<100){
-
-  setDinheiroCor("red");
-}
-
-
-}
-
-
+    setDividaCor(dividas !== 0 ? themas.cores.vermelho : themas.cores.preto);
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: cor, }}>
-<View > 
-    <View style={[style.topo, {backgroundColor: cor}]}>
-      
-      <Text>Deu certo</Text>
-      <StatusBar style="auto" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: cor }}>
+      <View style={[style.topo, { backgroundColor: cor }]}>
+        <StatusBar style="auto" />
+        <Text>Bem vindo {params.nome}</Text>
 
-<Text>Bem vindo {params.nome}</Text>
+        <TouchableOpacity onPress={trocar}>
+          <Text style={style.txt}>Trocar Bg: {estado}</Text>
+        </TouchableOpacity>
 
+        <View style={style.butoes}>
+          <Link href=""><Text>Voltar</Text></Link>
+        </View>
 
-<Text>Trocar Bg</Text>
-
-<TouchableOpacity onPress={(e)=> trocar()}> 
-<Text>{estado}</Text>  
-
-</TouchableOpacity> 
-
-<View style={style.butoes}>
-
-
-
-<Link href=""><Text>Voltar</Text></Link>
-</View>
-
-
-<Text style={{color: dinheiroCor}}>Dinheiro total: {dinheiro} R$</Text>
+        <Text style={style.dintitulo}>Dinheiro:</Text>
+        <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiro} R$</Text>
+        <Text style={{ color: dividaCor }}>Dívida total: {dividas} R$</Text>
       </View>
 
-<Botao titulo='Menos' texto='-' onPress={()=> diminuir()}>
+      <View style={style.baixo}>
+        <Input
+          nome={`quantia: ${quantia}`}
+          value={String(quantia)}
+          onChangeText={(e) => setQuantia(Number(e) || 0)}
+          keyboardType="numeric"
+        />
 
-</Botao>
+        <Botao titulo="Menos" texto="-" onPress={diminuir} />
+        <Botao titulo="Mais" texto="+" onPress={somar} />
+        <Botao texto="Resetar " onPress={resetarTudo} />
 
+        <View>
+          <Text style={style.label}>Escolha um tipo de gasto:</Text>
+          <Picker
+            selectedValue={gastos}
+            onValueChange={(itemValue) => setGastos(itemValue)}
+          >
+            <Picker.Item label="Selecione..." value="" />
+            <Picker.Item label="Necessidade" value="Necessidade" />
+            <Picker.Item label="Desejos" value="Desejos" />
+            <Picker.Item label="Investimento" value="Investimento" />
+          </Picker>
+        </View>
 
-<Botao titulo='Mais' texto="+" onPress={()=> somar()}>
-
-</Botao>
-
-</View>
-</SafeAreaView>
+        <Text>{necessidade}</Text>
+        <Text>{desejos}</Text>
+        <Text>{investimento}</Text>
+      </View>
+    </SafeAreaView>
   );
 }
-

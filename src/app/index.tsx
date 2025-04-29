@@ -5,6 +5,8 @@ import {Link} from "expo-router";
 import {Input} from "../components/input/index";
 import { useState, useRef } from 'react';
 import {useRouter, useFocusEffect} from 'expo-router';
+import { useFonts } from 'expo-font';
+import { Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 export default function App() {
 var router= useRouter();
@@ -12,9 +14,15 @@ var router= useRouter();
 const [nome,setNome]= useState("");
 const [senha,setSenha]= useState("");
 const [logo,setLogo]= useState(require("../imgs/gato2.gif"));
+
+
+const [fontsLoaded] = useFonts({
+  'Poppins_700Bold': Poppins_700Bold,
+});
+
 function fazer(){
 
-
+if (nome!= "" && senha != ""){
 if (nome== "Certo" && senha== "4"){
 
 router.push({
@@ -28,11 +36,14 @@ params: {nome: nome, senha: senha, logado: "true"},
 
 }else{
 
-    Alert.alert(nome, senha);
+    Alert.alert("Nome ou senha está incorreto");
+}
+
+}else {
+  Alert.alert("insira nome de usuario e senha")
 }
 }
 
-const inputRef = useRef<TextInput>(null);
 
   return (
     <> 
@@ -49,7 +60,7 @@ const inputRef = useRef<TextInput>(null);
 <Input nome="Nome" value={nome} onChangeText={(e)=>setNome(e)} placeholder='insira seu nome'
  onFocus={() => setLogo(require("../imgs/digito.png"))}  
  onBlur={() => { setLogo(require("../imgs/gato2.gif"))}}
- ></Input>
+></Input>
 
 
 <Input nome="Senha" value={senha} onChangeText={(e)=>setSenha(e)} 
