@@ -24,14 +24,24 @@ export default function App() {
   const [necessidade, setNecessidade] = useState(0);
   const [desejos, setDesejos] = useState(0);
   const [investimento, setInvestimento] = useState(0);
+const[dinheiroTotal,setdinheiroTotal]= useState(1000);
+const[necessidadesTotais,setnecessidadesTotais]= useState(0);
+const[desejostotal,setDesejostotal]= useState(0);
+const[investimentoTotal,setInvestimentoTotal]= useState(0);
 
-  useEffect(() => {
+ useEffect(() => {
     async function carregarDados() {
       const valorSalvo = await AsyncStorage.getItem('dinheiro');
       const dividaSalva = await AsyncStorage.getItem('divida');
       const necessidadeSalva = await AsyncStorage.getItem('necessidade');
       const investimentoSalvo = await AsyncStorage.getItem('investimento');
       const desejosSalvos = await AsyncStorage.getItem('desejos');
+
+
+setnecessidadesTotais((dinheiroTotal/100) *50);
+setDesejostotal((dinheiroTotal/100) *30);
+setInvestimentoTotal((dinheiroTotal/100) *20);
+
 
       if (valorSalvo !== null) setDinheiro(Number(valorSalvo));
       if (dividaSalva !== null) setDividas(Number(dividaSalva));
@@ -68,48 +78,81 @@ export default function App() {
     setTroca(!troca);
   }
 
-  async function diminuir() {
-    if (dinheiro < quantia) {
-      Alert.alert("Não gaste mais do que tem");
-      return;
-    }
 
+  function perguntarConfirmacao() {
+    return new Promise((resolve) => {
+      Alert.alert(
+        "Confirmar gasto",
+        "Deseja realmente subtrair essa quantia?",
+        [
+          { text: "Cancelar", onPress: () => resolve(false), style: "cancel" },
+          { text: "Sim", onPress: () => resolve(true) }
+        ],
+        { cancelable: false }
+      );
+    });
+  }
+
+  async function diminuir() {
+
+  
     switch (gastos) {
       case 'Necessidade':
-        const novaNecessidade = necessidade - quantia;
-        setNecessidade(novaNecessidade);
-        await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+        if (necessidade > 0) {
+          const novaNecessidade = necessidade - quantia;
+          setNecessidade(novaNecessidade);
+          await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+        } else {
+          Alert.alert("Saldo insuficiente na categoria Necessidade.");
+        }
         break;
-
+  
       case 'Desejos':
-        const novoDesejos = desejos - quantia;
-        setDesejos(novoDesejos);
-        await AsyncStorage.setItem('desejos', novoDesejos.toString());
+        if (desejos > 0) {
+          const novoDesejos = desejos - quantia;
+          setDesejos(novoDesejos);
+          await AsyncStorage.setItem('desejos', novoDesejos.toString());
+        } else {
+          Alert.alert("Saldo insuficiente na categoria Desejos.");
+        }
         break;
-
+  
       case 'Investimento':
-        const novoInvestimento = investimento - quantia;
-        setInvestimento(novoInvestimento);
-        await AsyncStorage.setItem('investimento', novoInvestimento.toString());
+        if (investimento > 0) {
+          const novoInvestimento = investimento - quantia;
+          setInvestimento(novoInvestimento);
+          await AsyncStorage.setItem('investimento', novoInvestimento.toString());
+        } else {
+          Alert.alert("Saldo insuficiente na categoria Investimento.");
+        }
         break;
-
+  
       default:
         Alert.alert("Selecione um tipo de gasto.");
         return;
     }
-
-    setDinheiro(dinheiro - quantia);
-    await AsyncStorage.setItem('dinheiro', (dinheiro - quantia).toString());
-
+  
     corMoney();
   }
-
   async function somar() {
+
+    if (quantia> (dinheiroTotal/40)){
+      const confirmado = await perguntarConfirmacao();
+      if (!confirmado) return;
+      
+      }
+    
+  
     switch (gastos) {
       case 'Necessidade':
+
+     
         const novaNecessidade = necessidade + quantia;
         setNecessidade(novaNecessidade);
         await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+      
+
+      
         break;
 
       case 'Desejos':
@@ -179,8 +222,13 @@ export default function App() {
         </View>
 
         <Text style={style.dintitulo}>Dinheiro:</Text>
-        <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiro} R$</Text>
-        <Text style={{ color: dividaCor }}>Dívida total: {dividas} R$</Text>
+        <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiroTotal} R$</Text>
+
+
+<Text>{"Objetivo para a necessidade:"+necessidadesTotais}</Text>
+<Text>{"Objetivo para a investimento:"+investimentoTotal}</Text>
+<Text>{"Objetivo para a desejos:"+desejostotal}</Text>
+
       </View>
 
       <View style={style.baixo}>
@@ -193,10 +241,11 @@ export default function App() {
 
         <Botao titulo="Menos" texto="-" onPress={diminuir} />
         <Botao titulo="Mais" texto="+" onPress={somar} />
-        <Botao texto="Resetar " onPress={resetarTudo} />
+       
 
         <View>
           <Text style={style.label}>Escolha um tipo de gasto:</Text>
+
           <Picker
             selectedValue={gastos}
             onValueChange={(itemValue) => setGastos(itemValue)}
@@ -206,11 +255,12 @@ export default function App() {
             <Picker.Item label="Desejos" value="Desejos" />
             <Picker.Item label="Investimento" value="Investimento" />
           </Picker>
+
         </View>
 
-        <Text>{necessidade}</Text>
-        <Text>{desejos}</Text>
-        <Text>{investimento}</Text>
+        <Text>{"necessidade:"+necessidade + " quantia que pode gastar: " + (necessidadesTotais - necessidade)}</Text>
+        <Text>{"desejos:"+desejos + " quantia que pode gastar: " + (desejostotal - desejos)}</Text>
+        <Text>{"investimento:"+investimento + " quantia que pode gastar: " + (investimentoTotal - investimento)}</Text>
       </View>
     </SafeAreaView>
   );

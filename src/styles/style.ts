@@ -48,6 +48,15 @@ alignItems: 'center',
                 marginBottom: 20,
             },
 
+            escolha:{
+
+                height: 50,
+                width: '100%',
+                backgroundColor: '#6200ee',
+                color: '#ffffff', 
+                borderRadius: 10,
+            },
+
     txt:{
 
         color: themas.cores.bonito,
