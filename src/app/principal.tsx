@@ -141,15 +141,16 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
       if (!confirmado) return;
       
       }
-    
-  
+
     switch (gastos) {
       case 'Necessidade':
 
-     
+         
+
         const novaNecessidade = necessidade + quantia;
         setNecessidade(novaNecessidade);
         await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
+  
       
 
       
