@@ -24,8 +24,8 @@ export default function App() {
   const [necessidade, setNecessidade] = useState(0);
   const [desejos, setDesejos] = useState(0);
   const [investimento, setInvestimento] = useState(0);
-const[dinheiroTotal,setdinheiroTotal]= useState(1000);
-const[necessidadesTotais,setnecessidadesTotais]= useState(0);
+  const [dinheiroTotal, setdinheiroTotal] = useState(0);
+  const[necessidadesTotais,setnecessidadesTotais]= useState(0);
 const[desejostotal,setDesejostotal]= useState(0);
 const[investimentoTotal,setInvestimentoTotal]= useState(0);
 const [pontos,setPontos]= useState(0);
@@ -34,41 +34,50 @@ const objN= necessidadesTotais - necessidade;
 const objD= desejostotal - desejos;
 const objI= investimentoTotal- investimento;
 const [nomeGasto,setNomegasto]= useState("");
- useEffect(() => {
-    async function carregarDados() {
-      const valorSalvo = await AsyncStorage.getItem('dinheiro');
-      const dividaSalva = await AsyncStorage.getItem('divida');
-      const necessidadeSalva = await AsyncStorage.getItem('necessidade');
-      const investimentoSalvo = await AsyncStorage.getItem('investimento');
-      const desejosSalvos = await AsyncStorage.getItem('desejos');
-      const historicoSalvo= await AsyncStorage.getItem('histgasto')
 
-setnecessidadesTotais((dinheiroTotal/100) *50);
-setDesejostotal((dinheiroTotal/100) *30);
-setInvestimentoTotal((dinheiroTotal/100) *20);
-sethistGastos(historicoSalvo || "");
+useEffect(() => {
+  async function carregarDados() {
+    const valorSalvo = await AsyncStorage.getItem('dinheiro');
+    const dividaSalva = await AsyncStorage.getItem('divida');
+    const necessidadeSalva = await AsyncStorage.getItem('necessidade');
+    const investimentoSalvo = await AsyncStorage.getItem('investimento');
+    const desejosSalvos = await AsyncStorage.getItem('desejos');
+    const historicoSalvo = await AsyncStorage.getItem('histgasto');
+    const dinheiroTotalSalvo = await AsyncStorage.getItem('dinheiroTotal');
 
-      if (valorSalvo !== null) setDinheiro(Number(valorSalvo));
-      if (dividaSalva !== null) setDividas(Number(dividaSalva));
-      if (necessidadeSalva !== null) setNecessidade(Number(necessidadeSalva));
-      if (investimentoSalvo !== null) setInvestimento(Number(investimentoSalvo));
-      if (desejosSalvos !== null) setDesejos(Number(desejosSalvos));
+    if (dinheiroTotalSalvo !== null) {
+      const total = Number(dinheiroTotalSalvo);
+      setdinheiroTotal(total);
+      setnecessidadesTotais((total * 50) / 100);
+      setDesejostotal((total * 30) / 100);
+      setInvestimentoTotal((total * 20) / 100);
     }
 
-    async function carregarTema() {
-      const temaSalvo = await AsyncStorage.getItem('tema');
-      if (temaSalvo === '🐈') {
-        setCor(themas.cores.transparente);
-        setEstado('🐈');
-      } else {
-        setCor(themas.cores.preto);
-        setEstado('🐈‍⬛');
-      }
+    if (valorSalvo !== null) setDinheiro(Number(valorSalvo));
+    if (dividaSalva !== null) setDividas(Number(dividaSalva));
+    if (necessidadeSalva !== null) setNecessidade(Number(necessidadeSalva));
+    if (investimentoSalvo !== null) setInvestimento(Number(investimentoSalvo));
+    if (desejosSalvos !== null) setDesejos(Number(desejosSalvos));
+    if (historicoSalvo !== null) sethistGastos(historicoSalvo);
+  }
+
+  async function carregarTema() {
+    const temaSalvo = await AsyncStorage.getItem('tema');
+    if (temaSalvo === '🐈') {
+      setCor(themas.cores.transparente);
+      setEstado('🐈');
+    } else {
+      setCor(themas.cores.preto);
+      setEstado('🐈‍⬛');
     }
-    Objetivo()
-    carregarDados();
-    carregarTema();
-  }, []);
+  }
+
+
+
+  carregarDados();
+  carregarTema();
+  corMoney();
+}, []);
 
   useEffect(() => {
     corMoney();
@@ -245,6 +254,18 @@ await AsyncStorage.setItem('histgasto', histGastos);
 
   }
 
+  async function porDinheiro(){
+
+setdinheiroTotal(dinheiroTotal);
+await AsyncStorage.setItem('dinheiroTotal', dinheiroTotal.toString())
+
+setnecessidadesTotais(dinheiroTotal/100 *50);
+setDesejostotal((dinheiroTotal/100) *30);
+setInvestimentoTotal((dinheiroTotal/100) *20);
+
+  }
+  
+
   return (
 
     <SafeAreaView style={{ flex: 1, backgroundColor: cor }}>
@@ -282,6 +303,15 @@ await AsyncStorage.setItem('histgasto', histGastos);
 <Text>{"Objetivo para a necessidade:"+necessidadesTotais}</Text>
 <Text>{"Objetivo para a investimento:"+investimentoTotal}</Text>
 <Text>{"Objetivo para a desejos:"+desejostotal}</Text>
+
+
+<Input nome="Setar Dinheiro" value={String(dinheiroTotal)} keyboardType='numeric'   onChangeText={(e) => setdinheiroTotal(Number(e) || 0)}
+>
+</Input>
+<Botao titulo='setar' texto='Setar' onPress={porDinheiro}>
+
+
+</Botao>
 
       </View>
       </View>
