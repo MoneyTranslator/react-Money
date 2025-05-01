@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, SafeAreaView, TouchableOpacity, Alert } from "react-native";
+import { Text, View, SafeAreaView, TouchableOpacity, Alert, Image,ScrollView } from "react-native";
 import { style } from "../styles/style";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
@@ -28,7 +28,12 @@ const[dinheiroTotal,setdinheiroTotal]= useState(1000);
 const[necessidadesTotais,setnecessidadesTotais]= useState(0);
 const[desejostotal,setDesejostotal]= useState(0);
 const[investimentoTotal,setInvestimentoTotal]= useState(0);
-
+const [pontos,setPontos]= useState(0);
+const [histGastos,sethistGastos]= useState("");
+const objN= necessidadesTotais - necessidade;
+const objD= desejostotal - desejos;
+const objI= investimentoTotal- investimento;
+const [nomeGasto,setNomegasto]= useState("");
  useEffect(() => {
     async function carregarDados() {
       const valorSalvo = await AsyncStorage.getItem('dinheiro');
@@ -36,12 +41,12 @@ const[investimentoTotal,setInvestimentoTotal]= useState(0);
       const necessidadeSalva = await AsyncStorage.getItem('necessidade');
       const investimentoSalvo = await AsyncStorage.getItem('investimento');
       const desejosSalvos = await AsyncStorage.getItem('desejos');
-
+      const historicoSalvo= await AsyncStorage.getItem('histgasto')
 
 setnecessidadesTotais((dinheiroTotal/100) *50);
 setDesejostotal((dinheiroTotal/100) *30);
 setInvestimentoTotal((dinheiroTotal/100) *20);
-
+sethistGastos(historicoSalvo || "");
 
       if (valorSalvo !== null) setDinheiro(Number(valorSalvo));
       if (dividaSalva !== null) setDividas(Number(dividaSalva));
@@ -60,7 +65,7 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
         setEstado('🐈‍⬛');
       }
     }
-
+    Objetivo()
     carregarDados();
     carregarTema();
   }, []);
@@ -91,6 +96,16 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
         { cancelable: false }
       );
     });
+  }
+
+  async function Objetivo(){
+
+
+   const objN= necessidadesTotais - necessidade;
+   const objD= desejostotal - desejos;
+   const objI= investimentoTotal- investimento
+
+
   }
 
   async function diminuir() {
@@ -130,53 +145,66 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
       default:
         Alert.alert("Selecione um tipo de gasto.");
         return;
+
+        Objetivo()
     }
   
     corMoney();
   }
   async function somar() {
-
-    if (quantia> (dinheiroTotal/40)){
+    if (quantia > (dinheiroTotal / 40)) {
       const confirmado = await perguntarConfirmacao();
       if (!confirmado) return;
-      
-      }
-
+    }
+  
+    let novaEntrada;
     switch (gastos) {
       case 'Necessidade':
-
-         
-
         const novaNecessidade = necessidade + quantia;
         setNecessidade(novaNecessidade);
         await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
   
-      
-
-      
+        novaEntrada = nomeGasto + "(necessidade): " + quantia;
+        const novoHistGastosN = histGastos + novaEntrada + "\n";  // Atualizando o histórico local
+        sethistGastos(novoHistGastosN);
+        await AsyncStorage.setItem('histgasto', novoHistGastosN); // Salvando o novo histórico
+  
         break;
-
+  
       case 'Desejos':
         const novoDesejos = desejos + quantia;
         setDesejos(novoDesejos);
         await AsyncStorage.setItem('desejos', novoDesejos.toString());
+  
+        novaEntrada = nomeGasto + "(desejos): " + quantia;
+        const novoHistGastosD = histGastos + novaEntrada + "\n";
+        sethistGastos(novoHistGastosD);
+        await AsyncStorage.setItem('histgasto', novoHistGastosD);
+  
         break;
-
+  
       case 'Investimento':
         const novoInvestimento = investimento + quantia;
         setInvestimento(novoInvestimento);
         await AsyncStorage.setItem('investimento', novoInvestimento.toString());
+  
+        novaEntrada = nomeGasto + "(investimento): " + quantia;
+        const novoHistGastosI = histGastos + novaEntrada + "\n";
+        sethistGastos(novoHistGastosI);
+        await AsyncStorage.setItem('histgasto', novoHistGastosI);
+  
         break;
-
+  
       default:
         Alert.alert("Selecione um tipo de gasto.");
         return;
     }
-
+  
     setDinheiro(dinheiro + quantia);
     await AsyncStorage.setItem('dinheiro', (dinheiro + quantia).toString());
-
+  
     corMoney();
+    Objetivo();
   }
 
   async function resetarTudo() {
@@ -193,6 +221,7 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
       ['investimento', '0']
     ]);
     corMoney();
+    Objetivo()
     Alert.alert("Reset feito", "Todos os valores foram zerados.");
   }
 
@@ -208,21 +237,45 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
     setDividaCor(dividas !== 0 ? themas.cores.vermelho : themas.cores.preto);
   }
 
+  async function apagar(){
+    
+sethistGastos("");
+await AsyncStorage.setItem('histgasto', histGastos);
+
+
+  }
+
   return (
+
     <SafeAreaView style={{ flex: 1, backgroundColor: cor }}>
-      <View style={[style.topo, { backgroundColor: cor }]}>
-        <StatusBar style="auto" />
-        <Text>Bem vindo {params.nome}</Text>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }} 
+      style={{ flex: 1 }}
+    >
 
-        <TouchableOpacity onPress={trocar}>
-          <Text style={style.txt}>Trocar Bg: {estado}</Text>
-        </TouchableOpacity>
+      
+<View style={[style.topo, { backgroundColor: cor }]}>
+  <StatusBar style="auto" />
+  <View style={style.row}>
+    <View>
+      <Text style={style.txt}>Bem vindo {params.nome}</Text>
+      <Text style={style.txt}>Pontos: {pontos}</Text>
+    </View>
 
-        <View style={style.butoes}>
-          <Link href=""><Text>Voltar</Text></Link>
-        </View>
+<Image source={require('../imgs/logo.png')} style={{ width: 50, height: 50 }} />
 
-        <Text style={style.dintitulo}>Dinheiro:</Text>
+    <TouchableOpacity onPress={trocar}>
+      <Text style={style.txt}>Trocar Bg: {estado}</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+
+      {/* Area de dinheiro total */}
+      <View style={{alignItems: "center",
+    justifyContent: "center"}}> 
+      <View style={style.principal}>
+
+      <Text style={style.dintitulo}>Dinheiro:</Text>
         <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiroTotal} R$</Text>
 
 
@@ -231,23 +284,38 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
 <Text>{"Objetivo para a desejos:"+desejostotal}</Text>
 
       </View>
+      </View>
 
-      <View style={style.baixo}>
+{/* adicionar gastos */}
+      <View style={[style.baixo, {alignItems: "center"}] } >
+
+        <View style={style.modificar}> 
+
+        <Input
+          nome={`Nome do gasto:`}
+          value={nomeGasto}
+          onChangeText={(e) => setNomegasto(e)}
+    
+        />
+
         <Input
           nome={`quantia: ${quantia}`}
           value={String(quantia)}
           onChangeText={(e) => setQuantia(Number(e) || 0)}
           keyboardType="numeric"
+    
         />
 
         <Botao titulo="Menos" texto="-" onPress={diminuir} />
         <Botao titulo="Mais" texto="+" onPress={somar} />
-       
+        <Botao titulo="apaga" texto="apaga" onPress={apagar} />
+        <Botao titulo="apgar valores" texto="apagaVals" onPress={resetarTudo} />
 
-        <View>
+
           <Text style={style.label}>Escolha um tipo de gasto:</Text>
 
           <Picker
+            style={{ width: '50%', height: 50 }}
             selectedValue={gastos}
             onValueChange={(itemValue) => setGastos(itemValue)}
           >
@@ -257,12 +325,27 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
             <Picker.Item label="Investimento" value="Investimento" />
           </Picker>
 
-        </View>
 
-        <Text>{"necessidade:"+necessidade + " quantia que pode gastar: " + (necessidadesTotais - necessidade)}</Text>
-        <Text>{"desejos:"+desejos + " quantia que pode gastar: " + (desejostotal - desejos)}</Text>
-        <Text>{"investimento:"+investimento + " quantia que pode gastar: " + (investimentoTotal - investimento)}</Text>
+        <Text>{"necessidade:"+necessidade + " quantia que pode gastar: " + objN}</Text>
+        <Text>{"desejos:"+desejos + " quantia que pode gastar: " + objD}</Text>
+        <Text>{"investimento:"+investimento + " quantia que pode gastar: " + objI}</Text>
+        </View>
       </View>
-    </SafeAreaView>
+
+
+{/* gastos */}
+<View style={{alignItems: "center", justifyContent: "center", paddingTop: 10,}}> 
+<Text>Historico de gastos</Text>
+  <View style={style.gastos}>  
+
+<Text>{histGastos}</Text>
+
+</View>
+
+</View>
+
+</ScrollView>
+</SafeAreaView>
+
   );
 }

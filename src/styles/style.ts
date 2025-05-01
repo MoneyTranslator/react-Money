@@ -1,138 +1,180 @@
-import { StyleSheet } from "react-native";
-import { Dimensions, StatusBar } from 'react-native';
+import { StyleSheet, Dimensions, StatusBar } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import { themas } from "../global/themes";
-import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
+const { width, height } = Dimensions.get('window');
 
+export const style = StyleSheet.create({
+  dintitulo: {
+    fontSize: RFValue(28),
+    color: themas.cores.preto,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    fontFamily: 'Montserrat-Bold',
+  },
 
-export const style=StyleSheet.create({
-    dintitulo:{
+  dinheiro: {
+    fontSize: RFValue(20),
+    color: themas.cores.bonito,
+    fontWeight: '600',
+    fontFamily: 'Montserrat-Regular',
+  },
 
-fontSize: 30,
-color: themas.cores.preto,
+  cimao: {
+    height: StatusBar.currentHeight,
+  },
 
-    },
+  topo: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: themas.cores.cinzaTransparente,
+    padding: 16,
+    width: '100%',
+    borderRadius: 12,
+    marginBottom: 20,
+  },
 
-    dinheiro:{
+  meio: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: themas.cores.transparente,
+    padding: 16,
+    width: '100%',
+    borderRadius: 12,
+    marginBottom: 20,
+  },
 
-fontSize: 20,
+  principal: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: themas.cores.azul,
+    width: "90%",
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 20,
+    backgroundColor: themas.cores.cinzaTransparente,
+  },
 
+  escolha: {
+    height: 50,
+    width: '100%',
+    backgroundColor: themas.cores.azul,
+    color: '#ffffff',
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    fontFamily: 'Montserrat-Medium',
+  },
 
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 10,
+  },
 
-    },
+  txt: {
+    color: themas.cores.bonito,
+    fontSize: RFValue(18),
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat-SemiBold',
+  },
 
-    cimao:{
-height: StatusBar.currentHeight,
-    },
+  label: {
+    marginBottom: 8,
+    fontSize: RFValue(16),
+    color: themas.cores.preto,
+    fontFamily: 'Montserrat-Regular',
+  },
 
-    topo:{
-alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: themas.cores.cinzaTransparente,
-        height: 'auto',
-        width: '100%',
-        borderWidth: 1,
-        borderRadius: "5%",
-        marginBottom: 20,
-  
-    },
+  picker: {
+    height: 50,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
 
-    meio:{
-        alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: themas.cores.transparente,
-                height: 'auto',
-                width: '100%',
-                borderWidth: 1,
-                borderRadius: "5%",
-                marginBottom: 20,
-            },
+  baixo: {
+    alignItems: 'center',
+    paddingTop: 20,
+    width: '100%',
+    flex: 1,
+  },
 
-            escolha:{
+  gastos: {
+    borderWidth: 1.5,
+    borderColor: themas.cores.azul,
+    width: "90%",
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: themas.cores.cinzaTransparente,
+    marginBottom: 16,
+  },
 
-                height: 50,
-                width: '100%',
-                backgroundColor: '#6200ee',
-                color: '#ffffff', 
-                borderRadius: 10,
-            },
+  modificar: {
+    borderWidth: 1.5,
+    borderColor: themas.cores.azul,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 12,
+    width: '90%',
+    borderRadius: 12,
+    backgroundColor: themas.cores.cinzaTransparente,
+  },
 
-    txt:{
+  txtinpt: {
+    height: height * 0.06,
+    width: width * 0.85,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    fontSize: RFValue(16),
+    marginBottom: 10,
+    color: themas.cores.preto,
+    fontFamily: 'Roboto-Regular',
+  },
 
-        color: themas.cores.bonito,
-        fontSize: 10,
-        fontWeight: 'bold',
-    },
+  bigtxt: {
+    fontSize: RFValue(28),
+    fontWeight: 'bold',
+    color: themas.cores.bonito,
+    fontFamily: 'Montserrat-Bold',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
 
-    label: { marginBottom: 10, fontSize: 16 },
-    picker: { height: 50, width: '100%', borderWidth: 1, borderRadius: 40,},
-
-    baixo: {
-        alignItems: 'center',
-        paddingTop: 20,
-        width: '100%',
-        flex: 1, 
-      },
-
-
-    txtinpt:{
-
-        height: Dimensions.get('window').height * 0.1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius : 40,
-        borderWidth: 2,
-        borderColor: 'black',
-        marginBottom:10,
-        
-            },
-
-            bigtxt:{
-
-                fontSize: 30,
-                fontWeight: 'bold',
-                color: themas.cores.bonito,
-                fontFamily: "sans-serif",
-                textAlign: 'center',
-                marginTop: 20,
-                marginBottom: 20,
-                alignItems: 'center',
-                justifyContent: 'center',
-
-            },
-
-images:{
-
-backgroundColor: 'red',
-
-
-    alignItems:'flex-end',
+  images: {
+    alignItems: 'flex-end',
     justifyContent: 'flex-end',
     flexDirection: 'row',
-    
+    marginTop: 10,
+  },
 
-},
-
-
-titulo: {
-    fontSize: 32,
+  titulo: {
+    fontSize: RFValue(32),
     fontWeight: "bold",
-    color: themas.cores.bonito, 
+    color: themas.cores.bonito,
     textAlign: "center",
     marginVertical: 20,
     textShadowColor: themas.cores.preto,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
-    fontFamily: "Poppins_700Bold",
-},
+    fontFamily: "Montserrat-Bold",
+  },
 
-
-btn: {
+  btn: {
     borderWidth: 2,
-    borderColor: themas.cores.azul, // define a cor da borda para combinar
+    borderColor: themas.cores.azul,
     borderRadius: 50,
-    width: "60%", // mais largo para dar presença
+    width: "60%",
     paddingVertical: 14,
     paddingHorizontal: 24,
     alignItems: "center",
@@ -142,27 +184,27 @@ btn: {
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 8, // sombra no Android
+    elevation: 8,
+    fontFamily: 'Montserrat-Medium',
   },
-  
-logo:{
 
-width: Dimensions.get("window").width *0.3,
-height: Dimensions.get("window").width *0.3,
+  logo: {
+    width: width * 0.3,
+    height: width * 0.3,
+    resizeMode: 'contain',
+  },
 
+  butoes: {
+    flexDirection: "row",
+    justifyContent: 'space-around',
+    width: '100%',
+    marginVertical: 10,
+  },
 
-},
-butoes:{
-flex:1,
-flexDirection: "row",
-},
-
-            img:{
-
-                width: Dimensions.get('window').height *0.1,
-               height: Dimensions.get('window').height *0.1,
-
-
-            }
-
-})
+  img: {
+    width: height * 0.1,
+    height: height * 0.1,
+    resizeMode: 'cover',
+    borderRadius: 10,
+  }
+});
