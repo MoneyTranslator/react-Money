@@ -32,6 +32,7 @@ export const style = StyleSheet.create({
     width: '100%',
     borderRadius: 12,
     marginBottom: 20,
+    borderWidth:2,
   },
 
   meio: {
@@ -42,6 +43,7 @@ export const style = StyleSheet.create({
     width: '100%',
     borderRadius: 12,
     marginBottom: 20,
+    borderWidth: 1,
   },
 
   principal: {

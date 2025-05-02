@@ -1,7 +1,7 @@
 export const themas={
 
 cores:{
-
+    cinzaClaro: 'd3d3d3',
     bonito: 'rgb(113, 223, 199)',
     preto:'rgba(0, 0, 0, 0.47)',
     branco: 'white',

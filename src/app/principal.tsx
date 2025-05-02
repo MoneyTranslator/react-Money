@@ -34,6 +34,14 @@ const objN= necessidadesTotais - necessidade;
 const objD= desejostotal - desejos;
 const objI= investimentoTotal- investimento;
 const [nomeGasto,setNomegasto]= useState("");
+const dataAtual = new Date();
+const dia = dataAtual.getDate(); 
+const mes = dataAtual.getMonth() + 1; 
+const ano = dataAtual.getFullYear(); 
+const hora = dataAtual.getHours(); 
+const minutos = dataAtual.getMinutes(); 
+
+
 
 useEffect(() => {
   async function carregarDados() {
@@ -44,6 +52,7 @@ useEffect(() => {
     const desejosSalvos = await AsyncStorage.getItem('desejos');
     const historicoSalvo = await AsyncStorage.getItem('histgasto');
     const dinheiroTotalSalvo = await AsyncStorage.getItem('dinheiroTotal');
+    const pontosSalvos= await AsyncStorage.getItem('pontos')
 
     if (dinheiroTotalSalvo !== null) {
       const total = Number(dinheiroTotalSalvo);
@@ -72,6 +81,12 @@ useEffect(() => {
     }
   }
 
+  async function carregarPontos() {
+    const pontosSalvos = await AsyncStorage.getItem('pontos');
+    setPontos(Number(pontosSalvos) || 0);
+  }
+
+  carregarPontos();
 
 
   carregarDados();
@@ -113,8 +128,40 @@ useEffect(() => {
    const objN= necessidadesTotais - necessidade;
    const objD= desejostotal - desejos;
    const objI= investimentoTotal- investimento
+   if (necessidade <= necessidadesTotais * 0.6) {
+    let pontosGanhos = 0;
 
-
+    // Necessidades — gastar até 60% = bom
+    if (necessidade <= necessidadesTotais * 0.6) {
+      pontosGanhos += 10;
+    } else if (necessidade <= necessidadesTotais) {
+      pontosGanhos += 5;
+    } else {
+      pontosGanhos -= 5; // gastou demais
+    }
+  
+    // Desejos — quanto menos, melhor
+    if (desejos <= desejostotal * 0.4) {
+      pontosGanhos += 10;
+    } else if (desejos <= desejostotal) {
+      pontosGanhos += 3;
+    } else {
+      pontosGanhos -= 5;
+    }
+  
+    // Investimentos — quanto mais investe, mais pontos
+    const porcentInvest = investimento / investimentoTotal;
+    if (porcentInvest >= 1.0) {
+      pontosGanhos += 15;
+    } else if (porcentInvest >= 0.7) {
+      pontosGanhos += 8;
+    } else if (porcentInvest >= 0.5) {
+      pontosGanhos += 4;
+    }
+  
+    setPontos(prev => prev + pontosGanhos);
+    await AsyncStorage.setItem('pontos', pontos.toString());
+  }
   }
 
   async function diminuir() {
@@ -161,7 +208,7 @@ useEffect(() => {
     corMoney();
   }
   async function somar() {
-    if (quantia > (dinheiroTotal / 40)) {
+    if (quantia > (dinheiroTotal / 0.4)) {
       const confirmado = await perguntarConfirmacao();
       if (!confirmado) return;
     }
@@ -174,7 +221,7 @@ useEffect(() => {
         await AsyncStorage.setItem('necessidade', novaNecessidade.toString());
   
         novaEntrada = nomeGasto + "(necessidade): " + quantia;
-        const novoHistGastosN = histGastos + novaEntrada + "\n";  // Atualizando o histórico local
+        const novoHistGastosN = histGastos + novaEntrada +"R$ " + dia + "/" + mes + "/"+ ano+ " " + hora + ":" + minutos+ "\n"+ "\n";
         sethistGastos(novoHistGastosN);
         await AsyncStorage.setItem('histgasto', novoHistGastosN); // Salvando o novo histórico
   
@@ -186,7 +233,7 @@ useEffect(() => {
         await AsyncStorage.setItem('desejos', novoDesejos.toString());
   
         novaEntrada = nomeGasto + "(desejos): " + quantia;
-        const novoHistGastosD = histGastos + novaEntrada + "\n";
+        const novoHistGastosD = histGastos + novaEntrada +"R$ " + dia + "/" + mes + "/"+ ano+ " " + hora + ":" + minutos+ "\n" + "\n";
         sethistGastos(novoHistGastosD);
         await AsyncStorage.setItem('histgasto', novoHistGastosD);
   
@@ -198,7 +245,7 @@ useEffect(() => {
         await AsyncStorage.setItem('investimento', novoInvestimento.toString());
   
         novaEntrada = nomeGasto + "(investimento): " + quantia;
-        const novoHistGastosI = histGastos + novaEntrada + "\n";
+        const novoHistGastosI = histGastos + novaEntrada +"R$ " + dia + "/" + mes + "/"+ ano+ " " + hora + ":" + minutos+ "\n"+ "\n";
         sethistGastos(novoHistGastosI);
         await AsyncStorage.setItem('histgasto', novoHistGastosI);
   
@@ -249,7 +296,7 @@ useEffect(() => {
   async function apagar(){
     
 sethistGastos("");
-await AsyncStorage.setItem('histgasto', histGastos);
+await AsyncStorage.setItem('histgasto', "");
 
 
   }
@@ -266,116 +313,104 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
   }
   
 
+
+
+
+  
+
+
   return (
-
     <SafeAreaView style={{ flex: 1, backgroundColor: cor }}>
-    <ScrollView 
-      contentContainerStyle={{ flexGrow: 1 }} 
-      style={{ flex: 1 }}
-    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-      
-<View style={[style.topo, { backgroundColor: cor }]}>
-  <StatusBar style="auto" />
-  <View style={style.row}>
-    <View>
-      <Text style={style.txt}>Bem vindo {params.nome}</Text>
-      <Text style={style.txt}>Pontos: {pontos}</Text>
-    </View>
-
-<Image source={require('../imgs/logo.png')} style={{ width: 50, height: 50 }} />
-
-    <TouchableOpacity onPress={trocar}>
-      <Text style={style.txt}>Trocar Bg: {estado}</Text>
-    </TouchableOpacity>
-  </View>
-</View>
-
-      {/* Area de dinheiro total */}
-      <View style={{alignItems: "center",
-    justifyContent: "center"}}> 
-      <View style={style.principal}>
-
-      <Text style={style.dintitulo}>Dinheiro:</Text>
-        <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiroTotal} R$</Text>
-
-
-<Text>{"Objetivo para a necessidade:"+necessidadesTotais}</Text>
-<Text>{"Objetivo para a investimento:"+investimentoTotal}</Text>
-<Text>{"Objetivo para a desejos:"+desejostotal}</Text>
-
-
-<Input nome="Setar Dinheiro" value={String(dinheiroTotal)} keyboardType='numeric'   onChangeText={(e) => setdinheiroTotal(Number(e) || 0)}
->
-</Input>
-<Botao titulo='setar' texto='Setar' onPress={porDinheiro}>
-
-
-</Botao>
-
-      </View>
-      </View>
-
-{/* adicionar gastos */}
-      <View style={[style.baixo, {alignItems: "center"}] } >
-
-        <View style={style.modificar}> 
-
-        <Input
-          nome={`Nome do gasto:`}
-          value={nomeGasto}
-          onChangeText={(e) => setNomegasto(e)}
-    
-        />
-
-        <Input
-          nome={`quantia: ${quantia}`}
-          value={String(quantia)}
-          onChangeText={(e) => setQuantia(Number(e) || 0)}
-          keyboardType="numeric"
-    
-        />
-
-        <Botao titulo="Menos" texto="-" onPress={diminuir} />
-        <Botao titulo="Mais" texto="+" onPress={somar} />
-        <Botao titulo="apaga" texto="apaga" onPress={apagar} />
-        <Botao titulo="apgar valores" texto="apagaVals" onPress={resetarTudo} />
-
-
-          <Text style={style.label}>Escolha um tipo de gasto a:</Text>
-
-          <Picker
-            style={{ width: '50%', height: 50 }}
-            selectedValue={gastos}
-            onValueChange={(itemValue) => setGastos(itemValue)}
-          >
-            <Picker.Item label="Selecione..." value="" />
-            <Picker.Item label="Necessidade" value="Necessidade" />
-            <Picker.Item label="Desejos" value="Desejos" />
-            <Picker.Item label="Investimento" value="Investimento" />
-          </Picker>
-
-
-        <Text>{"necessidade:"+necessidade + " quantia que pode gastar: " + objN}</Text>
-        <Text>{"desejos:"+desejos + " quantia que pode gastar: " + objD}</Text>
-        <Text>{"investimento:"+investimento + " quantia que pode gastar: " + objI}</Text>
+        {/* Topo */}
+        <View style={[style.topo, { backgroundColor: cor }]}>
+          <StatusBar style="auto" />
+          <View style={style.row}>
+            <View>
+              <Text style={style.txt}>Bem-vindo, {params.nome}</Text>
+              <Text style={style.txt}>Pontos: {pontos}</Text>
+            </View>
+            <Image source={require('../imgs/logo.png')} style={{ width: 50, height: 50 }} />
+            <TouchableOpacity onPress={trocar}>
+              <Text style={style.txt}>Trocar Bg: {estado}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
+        {/* Área do Dinheiro Total */}
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <View style={style.principal}>
+            <Text style={style.dintitulo}>Dinheiro:</Text>
+            <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiroTotal} R$</Text>
 
-{/* gastos */}
-<View style={{alignItems: "center", justifyContent: "center", paddingTop: 10,}}> 
-<Text>Historico de gastos</Text>
-  <View style={style.gastos}>  
+            <Text>Objetivo para a necessidade: {necessidadesTotais}</Text>
+            <Text>Objetivo para o investimento: {investimentoTotal}</Text>
+            <Text>Objetivo para os desejos: {desejostotal}</Text>
+
+            <Input
+              nome="Setar Dinheiro"
+              value={String(dinheiroTotal)}
+              keyboardType='numeric'
+              onChangeText={(e) => setdinheiroTotal(Number(e) || 0)}
+            />
+
+            <Botao titulo='Setar' texto='Setar' onPress={porDinheiro} />
+          </View>
+        </View>
+
+        {/* Adicionar Gastos */}
+        <View style={[style.baixo, { alignItems: 'center' }]}>
+          <View style={style.modificar}>
+            <Input
+              nome="Nome do gasto:"
+              value={nomeGasto}
+              onChangeText={(e) => setNomegasto(e)}
+            />
+
+            <Input
+              nome={`Quantia: ${quantia}`}
+              value={String(quantia)}
+              onChangeText={(e) => setQuantia(Number(e) || 0)}
+              keyboardType="numeric"
+            />
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+              <Botao titulo="Mais" texto="+" onPress={somar} />
+              <Botao titulo="Apagar Historico" texto="Apagar" onPress={apagar} />
+              <Botao titulo="Resetar Gastos" texto="Resetar" onPress={resetarTudo} />
+            </View>
+
+            <Text style={style.label}>Escolha um tipo de gasto:</Text>
+            <Picker
+              style={{ width: '80%', height: 50 }}
+              selectedValue={gastos}
+              onValueChange={(itemValue) => setGastos(itemValue)}
+            >
+              <Picker.Item label="Selecione..." value="" />
+              <Picker.Item label="Necessidade" value="Necessidade" />
+              <Picker.Item label="Desejos" value="Desejos" />
+              <Picker.Item label="Investimento" value="Investimento" />
+            </Picker>
+
+            <Text>Necessidade: {necessidade} | Pode gastar: {objN}</Text>
+            <Text>Desejos: {desejos} | Pode gastar: {objD}</Text>
+            <Text>Investimento: {investimento} | Pode gastar: {objI}</Text>
+          </View>
+        </View>
+
+        {/* Histórico de Gastos */}
+        <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Histórico de Gastos</Text>
+          <View style={style.gastos}>
+         
+         
 
 <Text>{histGastos}</Text>
+          </View>
+        </View>
 
-</View>
-
-</View>
-
-</ScrollView>
-</SafeAreaView>
-
+      </ScrollView>
+    </SafeAreaView>
   );
 }

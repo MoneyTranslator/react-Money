@@ -23,15 +23,22 @@ const [fontsLoaded] = useFonts({
 function fazer(){
 
 if (nome!= "" && senha != ""){
-if (nome== "Certo" && senha== "4"){
+if (nome== "Felps" && senha== "1234"){
 
-router.push({
+Alert.alert("Logado");
 
-pathname: "/principal",
-params: {nome: nome, senha: senha, logado: "true"},
+  setTimeout(() => {
 
+    router.push({
 
-})
+      pathname: "/principal",
+      params: {nome: nome, senha: senha, logado: "true"},
+      
+      
+      })
+
+  }, 2000);
+
 
 
 }else{
