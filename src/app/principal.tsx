@@ -342,7 +342,7 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
         <Botao titulo="apgar valores" texto="apagaVals" onPress={resetarTudo} />
 
 
-          <Text style={style.label}>Escolha um tipo de gasto:</Text>
+          <Text style={style.label}>Escolha um tipo de gasto a:</Text>
 
           <Picker
             style={{ width: '50%', height: 50 }}
