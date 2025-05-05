@@ -1,41 +1,52 @@
 {
   "expo": {
-    "name": "Money-Translator",
-    "slug": "Money-Translator",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.gabrielmellomm777.MoneyTranslator"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "a2798cb3-9a00-48f7-b924-9fe160dab77d"
-      }
-    }
+  "name": "Money-Translator",
+  "slug": "Money-Translator",
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "icon": "./assets/icon.png",
+  "userInterfaceStyle": "light",
+  "newArchEnabled": false,
+  "splash": {
+  "image": "./assets/splash-icon.png",
+  "resizeMode": "contain",
+  "backgroundColor": "#ffffff"
+  },
+  "runtimeVersion": {
+  "policy": "appVersion"
+  },
+  "updates": {
+  "url": "https://u.expo.dev/a2798cb3-9a00-48f7-b924-9fe160dab77d",
+  "requestHeaders": {
+  "expo-runtime-version": "1.0.0",
+  "expo-channel-name": "production",
+  "expo-platform": "android"
   }
-}
+  },
+  "ios": {
+  "supportsTablet": true
+  },
+  "android": {
+  "adaptiveIcon": {
+  "foregroundImage": "./assets/adaptive-icon.png",
+  "backgroundColor": "#ffffff"
+  },
+  "package": "com.gabrielmellomm777.MoneyTranslator"
+  },
+  "web": {
+  "favicon": "./assets/favicon.png"
+  },
+  "plugins": [
+  "expo-router",
+  "expo-font"
+  ],
+  "extra": {
+  "router": {
+  "origin": false
+  },
+  "eas": {
+  "projectId": "a2798cb3-9a00-48f7-b924-9fe160dab77d"
+  }
+  }
+  }
+  }

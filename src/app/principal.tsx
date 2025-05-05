@@ -12,7 +12,7 @@ import { Picker } from '@react-native-picker/picker';
 export default function App() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const [cor, setCor] = useState(themas.cores.transparente);
+  const [cor, setCor] = useState(themas.cores.claro);
   const [troca, setTroca] = useState(true);
   const [estado, setEstado] = useState("🐈");
   const [dinheiro, setDinheiro] = useState(0);
@@ -73,7 +73,7 @@ useEffect(() => {
   async function carregarTema() {
     const temaSalvo = await AsyncStorage.getItem('tema');
     if (temaSalvo === '🐈') {
-      setCor(themas.cores.transparente);
+      setCor(themas.cores.claro);
       setEstado('🐈');
     } else {
       setCor(themas.cores.preto);
@@ -91,16 +91,14 @@ useEffect(() => {
 
   carregarDados();
   carregarTema();
-  corMoney();
 }, []);
 
   useEffect(() => {
-    corMoney();
   }, [dinheiro]);
 
   async function trocar() {
     const novoEstado = troca ? '🐈' : '🐈‍⬛';
-    const novaCor = troca ? themas.cores.transparente : themas.cores.preto;
+    const novaCor = troca ? themas.cores.claro : themas.cores.preto;
     setEstado(novoEstado);
     setCor(novaCor);
     await AsyncStorage.setItem('tema', novoEstado);
@@ -202,10 +200,10 @@ useEffect(() => {
         Alert.alert("Selecione um tipo de gasto.");
         return;
 
-        Objetivo()
+        Objetivo();
+        const somoTotal = investimento + desejos + necessidade;
     }
   
-    corMoney();
   }
   async function somar() {
     if (quantia > (dinheiroTotal / 0.4)) {
@@ -259,7 +257,6 @@ useEffect(() => {
     setDinheiro(dinheiro + quantia);
     await AsyncStorage.setItem('dinheiro', (dinheiro + quantia).toString());
   
-    corMoney();
     Objetivo();
   }
 
@@ -276,22 +273,10 @@ useEffect(() => {
       ['desejos', '0'],
       ['investimento', '0']
     ]);
-    corMoney();
     Objetivo()
     Alert.alert("Reset feito", "Todos os valores foram zerados.");
   }
 
-  function corMoney() {
-    if (dinheiro >= 200) {
-      setDinheiroCor("yellow");
-    } else if (dinheiro >= 100) {
-      setDinheiroCor("green");
-    } else {
-      setDinheiroCor("red");
-    }
-
-    setDividaCor(dividas !== 0 ? themas.cores.vermelho : themas.cores.preto);
-  }
 
   async function apagar(){
     
@@ -318,11 +303,9 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
 
   
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: cor }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
         {/* Topo */}
         <View style={[style.topo, { backgroundColor: cor }]}>
           <StatusBar style="auto" />
@@ -337,28 +320,28 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
             </TouchableOpacity>
           </View>
         </View>
-
+  
         {/* Área do Dinheiro Total */}
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <View style={style.principal}>
-            <Text style={style.dintitulo}>Dinheiro:</Text>
-            <Text style={{ ...style.dinheiro, color: dinheiroCor }}>{dinheiroTotal} R$</Text>
-
-            <Text>Objetivo para a necessidade: {necessidadesTotais}</Text>
-            <Text>Objetivo para o investimento: {investimentoTotal}</Text>
-            <Text>Objetivo para os desejos: {desejostotal}</Text>
-
+            <Text style={style.bigtxt}>Dinheiro:</Text>
+            <Text style={{ ...style.dinheiro, color: themas.cores.verdeEsmeralda }}>
+              {dinheiroTotal} R$
+            </Text>
+  
+            <Text style={[style.txtBlack, {fontSize: 20}]}>Objetivo para a necessidade: {necessidadesTotais}</Text>
+            <Text style={[style.txtBlack, {fontSize: 20}]}>Objetivo para o investimento: {investimentoTotal}</Text>
+            <Text style={[style.txtBlack, {fontSize: 20}]}>Objetivo para os desejos: {desejostotal}</Text>
+  
             <Input
-              nome="Setar Dinheiro"
               value={String(dinheiroTotal)}
-              keyboardType='numeric'
+              keyboardType="numeric"
               onChangeText={(e) => setdinheiroTotal(Number(e) || 0)}
             />
-
-            <Botao titulo='Setar' texto='Setar' onPress={porDinheiro} />
+            <Botao texto="Setar dinheiro" onPress={porDinheiro} style={style.btn} />
           </View>
         </View>
-
+  
         {/* Adicionar Gastos */}
         <View style={[style.baixo, { alignItems: 'center' }]}>
           <View style={style.modificar}>
@@ -367,50 +350,51 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
               value={nomeGasto}
               onChangeText={(e) => setNomegasto(e)}
             />
-
+  
             <Input
               nome={`Quantia: ${quantia}`}
               value={String(quantia)}
               onChangeText={(e) => setQuantia(Number(e) || 0)}
               keyboardType="numeric"
             />
-
+  
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-              <Botao titulo="Mais" texto="+" onPress={somar} />
-              <Botao titulo="Apagar Historico" texto="Apagar" onPress={apagar} />
-              <Botao titulo="Resetar Gastos" texto="Resetar" onPress={resetarTudo} />
+              <Botao titulo="Mais" texto="+" onPress={somar} style={style.btn2} />
+              <Botao titulo="Apagar Historico" texto="Apagar" onPress={apagar} style={style.btn2} />
+              <Botao titulo="Resetar Gastos" texto="Resetar" onPress={resetarTudo} style={style.btn2}/>
             </View>
-
-            <Text style={style.label}>Escolha um tipo de gasto:</Text>
+  
+              
+            <Text style={[style.label, { color: themas.cores.pretoFonte }]}>Escolha um tipo de gasto:</Text>
             <Picker
-              style={{ width: '80%', height: 50 }}
+              style={{ width: '80%', height: 50 , fontSize: 20}}
               selectedValue={gastos}
               onValueChange={(itemValue) => setGastos(itemValue)}
             >
+
               <Picker.Item label="Selecione..." value="" />
               <Picker.Item label="Necessidade" value="Necessidade" />
               <Picker.Item label="Desejos" value="Desejos" />
               <Picker.Item label="Investimento" value="Investimento" />
             </Picker>
 
-            <Text>Necessidade: {necessidade} | Pode gastar: {objN}</Text>
-            <Text>Desejos: {desejos} | Pode gastar: {objD}</Text>
-            <Text>Investimento: {investimento} | Pode gastar: {objI}</Text>
+            <Text style={[style.txtBlack, {fontSize: 15}]}>Necessidade: {necessidade} | Pode gastar: {objN}</Text>
+            <Text style={[style.txtBlack, {fontSize: 15}]}>Desejos: {desejos} | Pode gastar: {objD}</Text>
+            <Text style={[style.txtBlack, {fontSize: 15}]}>Investimento: {investimento} | Pode gastar: {objI}</Text>
+            <Text style={[style.txtBlack, {fontSize: 15}]}>Total gasto: {investimento + desejos + necessidade}</Text>
           </View>
         </View>
-
+  
         {/* Histórico de Gastos */}
         <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 10 }}>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Histórico de Gastos</Text>
           <View style={style.gastos}>
-         
-         
-
-<Text>{histGastos}</Text>
+            <Text>{histGastos}</Text>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
+  
+  
 }

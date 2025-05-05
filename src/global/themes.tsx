@@ -1,20 +1,20 @@
-export const themas={
-
-cores:{
-    cinzaClaro: 'd3d3d3',
-    bonito: 'rgb(113, 223, 199)',
-    preto:'rgba(0, 0, 0, 0.47)',
-    branco: 'white',
-    vermelho: 'red',
-    azul: 'rgba(0, 255, 234, 0.47)',
-    verde: 'green',
-    roxo:'  purple',
-    bg:'rgba(168, 168, 168, 0.55)',
-    gray:'rgba(117, 117, 117, 0.466)',
-    cinzaTransparente:'rgba(124, 124, 124, 0.23)',
-    transparente: 'rgba(255, 255, 255, 0.33)'
-    
-}
-
-
-}
+export const themas = {
+    cores: {
+      cinzaClaro: '#e0e0e0',  
+      bonito: '#7fdbc7',     
+      preto: 'rgba(0, 0, 0, 0.35)',  
+      branco: 'white',
+      vermelho: '#ff4d4d',     
+      azul: '#23f4ff', 
+      verde: '#2ecc71',       
+      roxo: '#9b59b6',        
+      bg: 'rgba(220, 220, 220, 0.55)', 
+      gray: 'rgba(128, 128, 128, 0.5)',  
+      cinzaTransparente: 'rgba(128, 128, 128, 0.2)',  
+      claro: '#F2ECDF',        
+      pretoFonte: '#2C2C2E',   
+      azulNoite: '#1e2b5e',   
+      verdeEsmeralda: "#2ecc71",  
+    }
+  };
+  

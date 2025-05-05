@@ -3,7 +3,7 @@ import { Text, View,Image,TextInput,TouchableOpacity,Alert,ActivityIndicator, Sa
 import {style} from "../styles/style"
 import {Link} from "expo-router";
 import {Input} from "../components/input/index";
-import { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {useRouter, useFocusEffect} from 'expo-router';
 import { useFonts } from 'expo-font';
 import { Poppins_700Bold } from '@expo-google-fonts/poppins';

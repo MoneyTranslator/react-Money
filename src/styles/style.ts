@@ -15,7 +15,6 @@ export const style = StyleSheet.create({
 
   dinheiro: {
     fontSize: RFValue(20),
-    color: themas.cores.bonito,
     fontWeight: '600',
     fontFamily: 'Montserrat-Regular',
   },
@@ -32,13 +31,21 @@ export const style = StyleSheet.create({
     width: '100%',
     borderRadius: 12,
     marginBottom: 20,
-    borderWidth:2,
+    borderWidth: 2,
+  },
+
+  txtBlack: {
+    color: themas.cores.pretoFonte,
+  },
+
+  txtAzul: {
+    color: themas.cores.azulNoite,
   },
 
   meio: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: themas.cores.transparente,
+    backgroundColor: themas.cores.claro,
     padding: 16,
     width: '100%',
     borderRadius: 12,
@@ -62,7 +69,6 @@ export const style = StyleSheet.create({
     height: 50,
     width: '100%',
     backgroundColor: themas.cores.azul,
-    color: '#ffffff',
     borderRadius: 10,
     justifyContent: 'center',
     paddingHorizontal: 10,
@@ -78,7 +84,7 @@ export const style = StyleSheet.create({
   },
 
   txt: {
-    color: themas.cores.bonito,
+    color: themas.cores.azulNoite,
     fontSize: RFValue(18),
     fontWeight: 'bold',
     fontFamily: 'Montserrat-SemiBold',
@@ -87,7 +93,6 @@ export const style = StyleSheet.create({
   label: {
     marginBottom: 8,
     fontSize: RFValue(16),
-    color: themas.cores.preto,
     fontFamily: 'Montserrat-Regular',
   },
 
@@ -143,10 +148,22 @@ export const style = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
   },
 
+  btn2:{
+
+borderWidth: 2,
+borderRadius: 10,
+borderColor: themas.cores.azulNoite,
+textAlign: "center",
+justifyContent: "center",
+alignItems: "center",
+backgroundColor: themas.cores.azul
+
+  },
+
   bigtxt: {
     fontSize: RFValue(28),
     fontWeight: 'bold',
-    color: themas.cores.bonito,
+    color: themas.cores.pretoFonte,
     fontFamily: 'Montserrat-Bold',
     textAlign: 'center',
     marginTop: 20,
@@ -163,7 +180,6 @@ export const style = StyleSheet.create({
   titulo: {
     fontSize: RFValue(32),
     fontWeight: "bold",
-    color: themas.cores.bonito,
     textAlign: "center",
     marginVertical: 20,
     textShadowColor: themas.cores.preto,
@@ -176,12 +192,12 @@ export const style = StyleSheet.create({
     borderWidth: 2,
     borderColor: themas.cores.azul,
     borderRadius: 50,
-    width: "60%",
+    width: Dimensions.get('window').width * 0.8,
     paddingVertical: 14,
     paddingHorizontal: 24,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: themas.cores.azul,
+    backgroundColor: themas.cores.verde,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
