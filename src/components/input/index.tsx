@@ -19,7 +19,7 @@ export function  Input(props: TextInputProps & { nome?: string }) {
       
       {nome ? <Text style={style.titulo}>{nome}</Text> : null}
 
-<TextInput style={style.txtinpt} {...props} />
+<TextInput style={[style.txtinpt]} {...props} />
 
 
       

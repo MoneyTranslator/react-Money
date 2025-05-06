@@ -120,48 +120,7 @@ useEffect(() => {
     });
   }
 
-  async function Objetivo(){
-
-
-   const objN= necessidadesTotais - necessidade;
-   const objD= desejostotal - desejos;
-   const objI= investimentoTotal- investimento
-   if (necessidade <= necessidadesTotais * 0.6) {
-    let pontosGanhos = 0;
-
-    // Necessidades — gastar até 60% = bom
-    if (necessidade <= necessidadesTotais * 0.6) {
-      pontosGanhos += 10;
-    } else if (necessidade <= necessidadesTotais) {
-      pontosGanhos += 5;
-    } else {
-      pontosGanhos -= 5; // gastou demais
-    }
-  
-    // Desejos — quanto menos, melhor
-    if (desejos <= desejostotal * 0.4) {
-      pontosGanhos += 10;
-    } else if (desejos <= desejostotal) {
-      pontosGanhos += 3;
-    } else {
-      pontosGanhos -= 5;
-    }
-  
-    // Investimentos — quanto mais investe, mais pontos
-    const porcentInvest = investimento / investimentoTotal;
-    if (porcentInvest >= 1.0) {
-      pontosGanhos += 15;
-    } else if (porcentInvest >= 0.7) {
-      pontosGanhos += 8;
-    } else if (porcentInvest >= 0.5) {
-      pontosGanhos += 4;
-    }
-  
-    setPontos(prev => prev + pontosGanhos);
-    await AsyncStorage.setItem('pontos', pontos.toString());
-  }
-  }
-
+ 
   async function diminuir() {
 
   
@@ -200,7 +159,6 @@ useEffect(() => {
         Alert.alert("Selecione um tipo de gasto.");
         return;
 
-        Objetivo();
         const somoTotal = investimento + desejos + necessidade;
     }
   
@@ -221,7 +179,7 @@ useEffect(() => {
         novaEntrada = nomeGasto + "(necessidade): " + quantia;
         const novoHistGastosN = histGastos + novaEntrada +"R$ " + dia + "/" + mes + "/"+ ano+ " " + hora + ":" + minutos+ "\n"+ "\n";
         sethistGastos(novoHistGastosN);
-        await AsyncStorage.setItem('histgasto', novoHistGastosN); // Salvando o novo histórico
+        await AsyncStorage.setItem('histgasto', novoHistGastosN); 
   
         break;
   
@@ -257,7 +215,6 @@ useEffect(() => {
     setDinheiro(dinheiro + quantia);
     await AsyncStorage.setItem('dinheiro', (dinheiro + quantia).toString());
   
-    Objetivo();
   }
 
   async function resetarTudo() {
@@ -273,7 +230,6 @@ useEffect(() => {
       ['desejos', '0'],
       ['investimento', '0']
     ]);
-    Objetivo()
     Alert.alert("Reset feito", "Todos os valores foram zerados.");
   }
 
@@ -312,13 +268,16 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
           <View style={style.row}>
             <View>
               <Text style={style.txt}>Bem-vindo, {params.nome}</Text>
-              <Text style={style.txt}>Pontos: {pontos}</Text>
             </View>
             <Image source={require('../imgs/logo.png')} style={{ width: 50, height: 50 }} />
+
             <TouchableOpacity onPress={trocar}>
-              <Text style={style.txt}>Trocar Bg: {estado}</Text>
+              <Text style={style.txt}>Trocar modo: {estado}</Text>
             </TouchableOpacity>
+
           </View>
+          <Link href="/explicacoes"><Text style={style.txtBlack}> ‼️Explicações‼️</Text></Link>
+
         </View>
   
         {/* Área do Dinheiro Total */}
@@ -358,15 +317,10 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
               keyboardType="numeric"
             />
   
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-              <Botao titulo="Mais" texto="+" onPress={somar} style={style.btn2} />
-              <Botao titulo="Apagar Historico" texto="Apagar" onPress={apagar} style={style.btn2} />
-              <Botao titulo="Resetar Gastos" texto="Resetar" onPress={resetarTudo} style={style.btn2}/>
-            </View>
-  
-              
-            <Text style={[style.label, { color: themas.cores.pretoFonte }]}>Escolha um tipo de gasto:</Text>
-            <Picker
+            <View style={{ width: '100%' }}>
+              <Text style={[style.txtBlack, {justifyContent: "center", textAlign: "center"}]}>Escolha um tipo de gasto</Text>
+             
+              <Picker
               style={{ width: '80%', height: 50 , fontSize: 20}}
               selectedValue={gastos}
               onValueChange={(itemValue) => setGastos(itemValue)}
@@ -377,18 +331,31 @@ setInvestimentoTotal((dinheiroTotal/100) *20);
               <Picker.Item label="Desejos" value="Desejos" />
               <Picker.Item label="Investimento" value="Investimento" />
             </Picker>
+              <Botao  texto="Adcionar gasto" onPress={somar} style={style.btn2} />
+            </View>
+  
+            <Text>{"\n"}</Text>
+
+            <Text style={[style.label, { color: themas.cores.pretoFonte }]}>Escolha um tipo de gasto:</Text>
+     
 
             <Text style={[style.txtBlack, {fontSize: 15}]}>Necessidade: {necessidade} | Pode gastar: {objN}</Text>
             <Text style={[style.txtBlack, {fontSize: 15}]}>Desejos: {desejos} | Pode gastar: {objD}</Text>
             <Text style={[style.txtBlack, {fontSize: 15}]}>Investimento: {investimento} | Pode gastar: {objI}</Text>
             <Text style={[style.txtBlack, {fontSize: 15}]}>Total gasto: {investimento + desejos + necessidade}</Text>
+           <Text>{"\n"}</Text>
+            <Botao titulo="Resetar Gastos" texto="Resetar" onPress={resetarTudo} style={style.btn2}/>
+
           </View>
         </View>
   
         {/* Histórico de Gastos */}
         <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 10 }}>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Histórico de Gastos</Text>
+          
+
           <View style={style.gastos}>
+          <Botao texto="Apagar" onPress={apagar} style={style.btn2} />
             <Text>{histGastos}</Text>
           </View>
         </View>

@@ -36,6 +36,7 @@ export const style = StyleSheet.create({
 
   txtBlack: {
     color: themas.cores.pretoFonte,
+    fontSize: 20,
   },
 
   txtAzul: {
@@ -121,6 +122,9 @@ export const style = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: themas.cores.cinzaTransparente,
     marginBottom: 16,
+    justifyContent: "center",
+    alignContent: "center",
+    textAlign: "center",
   },
 
   modificar: {
@@ -146,6 +150,9 @@ export const style = StyleSheet.create({
     marginBottom: 10,
     color: themas.cores.preto,
     fontFamily: 'Roboto-Regular',
+    textAlign: "center",
+justifyContent: "center",
+alignItems: "center",
   },
 
   btn2:{
@@ -156,7 +163,7 @@ borderColor: themas.cores.azulNoite,
 textAlign: "center",
 justifyContent: "center",
 alignItems: "center",
-backgroundColor: themas.cores.azul
+backgroundColor: themas.cores.azul,
 
   },
 
@@ -177,16 +184,16 @@ backgroundColor: themas.cores.azul
     marginTop: 10,
   },
 
-  titulo: {
-    fontSize: RFValue(32),
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 20,
-    textShadowColor: themas.cores.preto,
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-    fontFamily: "Montserrat-Bold",
-  },
+titulo: {
+  fontSize: RFValue(32),
+  fontWeight: "bold",
+  textAlign: "center",
+  marginVertical: 20,
+  color: themas.cores.pretoFonte,
+  fontFamily: "Montserrat-Bold",
+  justifyContent: "center",
+  alignItems: "center",
+},
 
   btn: {
     borderWidth: 2,
@@ -220,8 +227,8 @@ backgroundColor: themas.cores.azul
   },
 
   img: {
-    width: height * 0.1,
-    height: height * 0.1,
+    width: height * 0.2,
+    height: height * 0.2,
     resizeMode: 'cover',
     borderRadius: 10,
   }
